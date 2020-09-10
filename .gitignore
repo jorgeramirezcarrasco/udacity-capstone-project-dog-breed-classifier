@@ -130,3 +130,6 @@ dmypy.json
 
 # Mac folderss
 .DS_Store
+
+# Large files
+model_scratch.pt
