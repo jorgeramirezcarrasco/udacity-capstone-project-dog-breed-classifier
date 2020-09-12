@@ -10,9 +10,6 @@ from datetime import datetime
 from io import BytesIO
 
 import boto3
-import cv2
-import numpy as np
-import pandas as pd
 import sagemaker_containers
 import torch
 import torch.nn as nn
@@ -26,19 +23,6 @@ from torchvision.transforms import ToTensor
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-
-def download_s3_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME):
-    s3 = boto3.client('s3')
-    s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
-
-download_s3_file('sagemaker-eu-central-1-411771656960','capstone-project-dog-breed-classifier/class_names.txt','class_names.txt')
-with open('class_names.txt') as f:
-    class_names = literal_eval(f.read())
-
-download_s3_file('sagemaker-eu-central-1-411771656960','capstone-project-dog-breed-classifier/haarcascade_frontalface_alt.xml','haarcascade_frontalface_alt.xml')
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
-
-VGG16 = models.vgg16(pretrained=True)
 
 def model_fn(model_dir):
     """Load the PyTorch model from the `model_dir` directory."""
@@ -90,11 +74,6 @@ def dog_detector(img):
         return True
     else:
         return False
-    
-def face_detector(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray)
-    return len(faces) > 0
 
 def VGG16_predict(img):
     '''
@@ -121,6 +100,7 @@ def VGG16_predict(img):
     return torch.max(output,1)[1].item()
 
 def predict_breed_sagemaker_transfer(img, model):
+    
     # load the image and return the predicted breed
     transform = transforms.Compose(
     [transforms.Resize(size=(224,224)),
@@ -132,8 +112,19 @@ def predict_breed_sagemaker_transfer(img, model):
     output_index = torch.max(output,1)[1].item()
     return class_names[output_index]
 
+def download_s3_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME):
+        s3 = boto3.client('s3')
+        s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
+
+
+download_s3_file('sagemaker-eu-central-1-411771656960','capstone-project-dog-breed-classifier/class_names.txt','class_names.txt')
+with open('class_names.txt') as f:
+    class_names = literal_eval(f.read())
+    
 def predict_fn(input_data, model):
     print('Inferring dog breed of input data.')
+
+    VGG16 = models.vgg16(pretrained=True)
         
     image_data = re.sub('^data:image/.+;base64,', '', input_data)
     
@@ -142,9 +133,6 @@ def predict_fn(input_data, model):
     if dog_detector(img) is True:
         prediction = predict_breed_sagemaker_transfer(img, model)
         response = "Dogs Detected!\nIt looks like a {0}".format(prediction) 
-    elif face_detector(img) > 0:
-        prediction = predict_breed_sagemaker_transfer(img, model)
-        response = "Hello, human!\nIf you were a dog..You may look like a {0}".format(prediction)
     else:
         response = "Error! Can't detect anything.."
     
