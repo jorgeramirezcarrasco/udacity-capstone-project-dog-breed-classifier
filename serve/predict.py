@@ -1,35 +1,37 @@
 import argparse
+import base64
 import json
 import os
 import pickle
+import re
 import sys
-import sagemaker_containers
+from ast import literal_eval
 from datetime import datetime
-import pandas as pd
+from io import BytesIO
+
+import boto3
+import cv2
 import numpy as np
+import pandas as pd
+import sagemaker_containers
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.models as models
 import torchvision.transforms as transforms
-
 from PIL import Image, ImageFile
 from torchvision import datasets
 from torchvision.transforms import ToTensor
-from io import BytesIO
-import cv2
-
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-import boto3
+
 def download_s3_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME):
     s3 = boto3.client('s3')
     s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
 
 download_s3_file('sagemaker-eu-central-1-411771656960','capstone-project-dog-breed-classifier/class_names.txt','class_names.txt')
-from ast import literal_eval
 with open('class_names.txt') as f:
     class_names = literal_eval(f.read())
 
@@ -89,13 +91,10 @@ def dog_detector(img):
     else:
         return False
     
-
 def face_detector(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray)
     return len(faces) > 0
-
-
 
 def VGG16_predict(img):
     '''
