@@ -86,6 +86,7 @@ def VGG16_predict(img):
     Returns:
         Index corresponding to VGG-16 model's prediction
     '''
+    VGG16 = models.vgg16(pretrained=True)
 
     transform = transforms.Compose(
     [transforms.Resize(size=(256,256)),
@@ -123,8 +124,6 @@ with open('class_names.txt') as f:
     
 def predict_fn(input_data, model):
     print('Inferring dog breed of input data.')
-
-    VGG16 = models.vgg16(pretrained=True)
         
     image_data = re.sub('^data:image/.+;base64,', '', input_data)
     
