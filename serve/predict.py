@@ -60,13 +60,14 @@ def model_fn(model_dir):
 def input_fn(serialized_input_data, content_type):
     print('Deserializing the input data.')
     if content_type == 'application/json':
-        data = serialized_input_data.decode('utf-8')
-        return data
+        data = json.loads(serialized_input_data)
+        return data['file']
     raise Exception('Requested unsupported ContentType in content_type: ' + content_type)
 
-def output_fn(prediction_output, accept):
+def output_fn(prediction, response_content_type):
     print('Serializing the generated output.')
-    return str(prediction_output)
+    response = {"result":prediction}
+    return json.dumps(response)
 
 def dog_detector(img):
     label = VGG16_predict(img)
@@ -108,7 +109,7 @@ def predict_breed_sagemaker_transfer(img, model):
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])])
-    output = torch.from_numpy(model(transform(img).unsqueeze(0)))   
+    output = model(transform(img).unsqueeze(0))  
     # position 0 return value, position 1 return indices
     output_index = torch.max(output,1)[1].item()
     return class_names[output_index]
