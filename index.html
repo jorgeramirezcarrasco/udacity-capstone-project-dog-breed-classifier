@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Dog Breed Classifier Web App</title>
+        <meta charset="utf-8">
+        <meta name="viewport"  content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script>
+        'use strict';
+         function getDogBreed() {
+            var input = document.querySelector('input[type=file]');
+            var file = input.files[0], reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = function () {
+                document.getElementById('img').setAttribute(
+                        'src',reader.result);
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    var result = JSON.parse(xhr.response);
+                    var resultElement = document.getElementById('result');
+
+                    if (result == "") {
+                        resultElement.className = 'bg-danger';
+                        resultElement.innerHTML = 'Something went wrong!';
+                    } else {
+                        resultElement.className = 'bg-success';
+                        
+                        resultElement.innerHTML = result['result'].replace(/\n/g, "<br />");
+                    }
+                }
+                
+
+                xhr.open("POST", "https://rkhqht8n6l.execute-api.eu-central-1.amazonaws.com/prod/dog_breed_classifier", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                var data = JSON.stringify({"file":reader.result})
+                xhr.send(data);
+                };
+                            
+            
+         }
+        </script>
+
+    </head>
+    <body>
+
+        <div class="container">
+            <h1>Which is your dog breed?</h1>
+            <p>Upload an image of a dog to find out...</p>
+            <form>
+                <div class="form-group">
+                    <label for="img">Select image:</label>
+                    <input type="file" id="img_input" name="img" accept="image/*">
+                </div>  
+                <button type="button" class="btn btn-default" onclick="getDogBreed()">Submit</button>
+            
+            </form>
+            <img id="img"></img>
+            <h1 class="bg-success" id="result"></h1>
+        </div>
+    </body>
+</html>
+
+

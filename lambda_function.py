@@ -18,6 +18,9 @@ def lambda_handler(event, context):
 
     return {
         'statusCode' : 200,
-        'headers' : { 'Content-Type' : 'text/plain', 'Access-Control-Allow-Origin' : '*' },
+        'headers' : { 'Content-Type' : 'text/plain', 
+                      'Access-Control-Allow-Origin' : '*',
+                      'Access-Control-Allow-Headers': 'Content-Type',
+                      'Access-Control-Allow-Methods': 'OPTIONS,GET,POST' },
         'body' : result
     }
