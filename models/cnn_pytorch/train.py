@@ -51,10 +51,9 @@ def model_fn(model_dir):
     print("Done loading model.")
     return model
 
-# Gets training data in batches from the train.csv file
 def __get_train_data_loader(batch_size, training_dir):
+    """Gets training data in batches"""
     print("Get train data loader.")
-
 
     train_dir = os.path.join(training_dir, 'train/')
     
@@ -73,8 +72,6 @@ def __get_train_data_loader(batch_size, training_dir):
     return torch.utils.data.DataLoader(train_set, batch_size=batch_size,
                                           shuffle=True)
 
-
-# Provided training function
 def train(model, train_loader, epochs, criterion, optimizer, device):
     """
     This is the training method that is called by the PyTorch training script. The parameters

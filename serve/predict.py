@@ -58,6 +58,7 @@ def model_fn(model_dir):
     return model
 
 def input_fn(serialized_input_data, content_type):
+    """ Function that receives the input in the endpoint and pass it to the model """
     print('Deserializing the input data.')
     if content_type == 'application/json':
         data = json.loads(serialized_input_data)
@@ -65,6 +66,7 @@ def input_fn(serialized_input_data, content_type):
     raise Exception('Requested unsupported ContentType in content_type: ' + content_type)
 
 def output_fn(prediction, response_content_type):
+    """ Function that receives the output from the model and make the response in the endpoint """
     print('Serializing the generated output.')
     response = {"result":prediction}
     return json.dumps(response)
@@ -77,16 +79,8 @@ def dog_detector(img):
         return False
 
 def VGG16_predict(img):
-    '''
-    Use pre-trained VGG-16 model to obtain index corresponding to 
-    predicted ImageNet class for image at specified path
-    
-    Args:
-        img: img
-        
-    Returns:
-        Index corresponding to VGG-16 model's prediction
-    '''
+    """ Use pre-trained VGG-16 model to obtain index corresponding to 
+    predicted ImageNet class for image at specified path """
     VGG16 = models.vgg16(pretrained=True)
 
     transform = transforms.Compose(
@@ -102,7 +96,7 @@ def VGG16_predict(img):
     return torch.max(output,1)[1].item()
 
 def predict_breed_sagemaker_transfer(img, model):
-    
+    """ Function that receives an image and return the prediction from the trained sagemaker model """
     # load the image and return the predicted breed
     transform = transforms.Compose(
     [transforms.Resize(size=(224,224)),
@@ -114,9 +108,10 @@ def predict_breed_sagemaker_transfer(img, model):
     output_index = torch.max(output,1)[1].item()
     return class_names[output_index]
 
-def download_s3_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME):
-        s3 = boto3.client('s3')
-        s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
+def download_s3_file(bucket_name, bucket_file_name, local_file_name):
+    """ Function to download files from the bucket """
+    s3 = boto3.client('s3')
+    s3.download_file(bucket_name, bucket_file_name, local_file_name)
 
 
 download_s3_file('sagemaker-eu-central-1-411771656960','capstone-project-dog-breed-classifier/class_names.txt','class_names.txt')
@@ -124,6 +119,7 @@ with open('class_names.txt') as f:
     class_names = literal_eval(f.read())
     
 def predict_fn(input_data, model):
+    """ Endpoint function that receives the input and make the inference """
     print('Inferring dog breed of input data.')
         
     image_data = re.sub('^data:image/.+;base64,', '', input_data)
