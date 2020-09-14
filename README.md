@@ -3,38 +3,26 @@ Udacity Capstone Project Dog Breed Classifier
 
 ## Project Overview
 
+The problem of the proposal is to categorize dog and human images estimating the closer canine's breed. Given an image of a dog, the algorithm will identify an estimate of the canine’s breed. If supplied an image of a human, the code will identify the resembling dog breed. From the initial dataset a subset of images will be stored for testing in order to measure the estimations' quality.
 
 ## Project Instructions
 
-### Instructions
+The code have been developed working with the notebook instances of AWS Sagemaker. Everything is designed to work with the jupyter lab environment pytorch_p36 and make usage of the SageMaker training and endpoint capabilities.
 
-1. Clone the repository and navigate to the downloaded folder.
-	
-	```	
-		git clone https://github.com/udacity/deep-learning-v2-pytorch.git
-		cd deep-learning-v2-pytorch/project-dog-classification
-	```
-	
-__NOTE:__ if you are using the Udacity workspace, you *DO NOT* need to re-download the datasets in steps 2 and 3 - they can be found in the `/data` folder as noted within the workspace Jupyter notebook.
+## Datasets
 
-2. Download the [dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip).  Unzip the folder and place it in the repo, at location `path/to/dog-project/dogImages`.  The `dogImages/` folder should contain 133 folders, each corresponding to a different dog breed.
-3. Download the [human dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz).  Unzip the folder and place it in the repo, at location `path/to/dog-project/lfw`.  If you are using a Windows machine, you are encouraged to use [7zip](http://www.7-zip.org/) to extract the folder. 
-4. Make sure you have already installed the necessary Python packages according to the README in the program repository.
-5. Open a terminal window and navigate to the project folder. Open the notebook and follow the instructions.
-	
-	```
-		jupyter notebook dog_app.ipynb
-	```
+* [Dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip). It contain dog iamges of 133 breeds.
+* [Human dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz). It contains celebrities' images for training a face detector.
 
-__NOTE:__ While some code has already been implemented to get you started, you will need to implement additional functionality to successfully answer all of the questions included in the notebook. __Unless requested, do not modify code that has already been included.__
+## Directories and Files
 
-__NOTE:__ In the notebook, you will need to train CNNs in PyTorch.  If your CNN is taking too long to train, feel free to pursue one of the options under the section __Accelerating the Training Process__ below.
-
-
-## (Optionally) Accelerating the Training Process 
-
-If your code is taking too long to run, you will need to either reduce the complexity of your chosen CNN architecture or switch to running your code on a GPU.  If you'd like to use a GPU, you can spin up an instance of your own:
-
-#### Amazon Web Services
-
-You can use Amazon Web Services to launch an EC2 GPU instance. (This costs money, but enrolled students should see a coupon code in their student `resources`.)
+* **haarcascades/:** folder with the required xml file for opencv to make the face detection.
+* **images/:** test images for the notebook.
+* **lambda/:** folder that contains the file with the lambda function code.
+* **models/:** folder that contains the required pytorch code and requirements for make the model training with AWS SageMaker.
+* **serve/:** folder that contains the required pytorch code for make the inference with AWS SageMaker.
+* **web/:** folder that contains the webapp html & js code.
+* **capstone_project_dog_breed_classifier.ipynb:** Notebook with all the code and steps of the project from downloading the datasets until the testing of the inference code.
+* **capstone_project_dog_breed_classifier.html:** HTML version of the notebook.
+* **model_transfer.pt:** Pytorch model trained from scratch
+* **README.md:** Readme file.
