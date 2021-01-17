@@ -12,7 +12,7 @@ The code have been developed working with the notebook instances of AWS Sagemake
 
 ## Datasets
 
-* [Dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip). It contain dog iamges of 133 breeds.
+* [Dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip). It contains dog images of 133 breeds.
 * [Human dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz). It contains celebrities' images for training a face detector.
 
 ## Directories and Files
